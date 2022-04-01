@@ -6,6 +6,7 @@ import torch
 from utils.general import (check_img_size, non_max_suppression, scale_coords)
 from tkinter import *
 from tkinter import filedialog
+import natsort
 # FILE = Path(__file__).resolve()
 # ROOT = FILE.parents[0]  # YOLOv5 root directory
 # if str(ROOT) not in sys.path:
@@ -188,11 +189,14 @@ class Detector():
         model.to(self.device).eval()
         names = model.module.names if hasattr(model, 'module') else model.names
         IMAGES_LIST = os.listdir(self.imgdir)
-        for image_name in IMAGES_LIST:
+        for image_name in natsort.natsorted(IMAGES_LIST):
             # print(image_name)
             # 判断后缀只处理图片文件
             if image_name.endswith(('.jpg', '.png', '.jpeg', '.bmp')):
                 image = cv2.imread(os.path.join(self.imgdir, image_name))
+                if image is None:
+                    print(image_name+"图像为空请删除")
+                    continue
                 file_tail = os.path.splitext(image_name)[1]
                 coordinates_list = self.run(image, model, self.device, self.half)
                 (h, w) = image.shape[:2]
