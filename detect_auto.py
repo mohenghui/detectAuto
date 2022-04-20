@@ -57,7 +57,7 @@ class Detector():
         img = letterbox(img0, auto=True, new_shape=img_size, stride=32)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
-        model.warmup(imgsz=(1, 3, *img_size), half=half)  # warmup
+        # model.warmup(imgsz=(1, 3, *img_size), half=half)  # warmup
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255  # 0 - 255 to 0.0 - 1.0
